@@ -15,7 +15,12 @@ import grph.algo.traversal.SearchResult;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -64,6 +69,35 @@ public class eHospital extends javax.swing.JFrame {
         jbotton_ambulancia.setIcon(ambulancias);
         jbotton_coneccion.setIcon(coneccion);
 
+        Scanner sc = null;
+        File archivo2 = null;
+        try {
+            archivo2 = new File("./paramedicos.txt");
+            sc = new Scanner(archivo2);
+            sc.useDelimiter(",");
+            while (sc.hasNext()) {
+                Paramedicos paramedicos1 = new Paramedicos(sc.next(), sc.nextInt(), sc.next(), sc.next());
+                paramedicos.add(paramedicos1);
+            }
+        } catch (Exception e) {
+        } finally {
+            sc.close();
+        }
+
+        Scanner sc1 = null;
+        File archivo = null;
+        try {
+            archivo = new File("./ambulancias.txt");
+            sc1 = new Scanner(archivo);
+            sc1.useDelimiter(",");
+            while (sc1.hasNext()) {
+                Ambulancias ambulancias1 = new Ambulancias(sc.next(), sc.next(), sc.nextInt());
+                ambulancia.add(ambulancias1);
+            }
+        } catch (Exception e) {
+        } finally {
+            sc1.close();
+        }
     }
 
     /**
@@ -1298,6 +1332,28 @@ public class eHospital extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(jpanel_paramedicos, "Se agrego correctamente", "Completado", WIDTH);
         }
 
+        File archivo;
+        FileWriter fw = null;
+        BufferedWriter bw = null;
+        try {
+            archivo = new File("./paramedicos.txt");
+            fw = new FileWriter(archivo, true);
+            bw = new BufferedWriter(fw);
+            bw.write(paramedico_nombre.getText() + ",");
+            bw.write(Integer.parseInt(paramedico_edad.getValue().toString()) + ",");
+            bw.write(paramedico_id.getText() + ",");
+            bw.write(paramedico_ranking.getSelectedItem().toString());
+            bw.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                bw.close();
+                fw.close();
+            } catch (IOException ex) {
+            }
+
+        }
         DefaultComboBoxModel model = new DefaultComboBoxModel();
         for (int i = 0; i < paramedicos.size(); i++) {
             model.addElement(paramedicos.get(i));
@@ -1368,17 +1424,36 @@ public class eHospital extends javax.swing.JFrame {
             ambulancia.add(ambulancias);
             JOptionPane.showMessageDialog(jpanel_ambulancia, "Se agrego correctamente", "Completado", WIDTH);
         }
-
-        DefaultComboBoxModel model = new DefaultComboBoxModel();
-        for (int i = 0; i < ambulancia.size(); i++) {
-            model.addElement(ambulancia.get(i));
+        File archivo;
+        FileWriter fw = null;
+        BufferedWriter bw = null;
+        try {
+            archivo = new File("./ambulancias.txt");
+            fw = new FileWriter(archivo, true);
+            bw = new BufferedWriter(fw);
+            bw.write(ambulancia_placa.getText() + ",");
+            bw.write(ambulancia_año.getText() + ",");
+            bw.write(Integer.parseInt(ambulancia_velocidad.getValue().toString()) + ",");
+            bw.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                bw.close();
+                fw.close();
+            } catch (IOException ex) {
+            }
         }
-        combo_eliminarambulancias.setModel(model);
-        jb_ambulancia.setModel(model);
+            DefaultComboBoxModel model = new DefaultComboBoxModel();
+            for (int i = 0; i < ambulancia.size(); i++) {
+                model.addElement(ambulancia.get(i));
+            }
+            combo_eliminarambulancias.setModel(model);
+            jb_ambulancia.setModel(model);
 
-        ambulancia_placa.setText("");
-        ambulancia_año.setText("");
-        ambulancia_velocidad.setValue(1);
+            ambulancia_placa.setText("");
+            ambulancia_año.setText("");
+            ambulancia_velocidad.setValue(1);
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
@@ -1466,9 +1541,9 @@ public class eHospital extends javax.swing.JFrame {
         grafo.setNombreNodo(numero, a_otrolado.getText());
         numero++;
         DefaultComboBoxModel model = new DefaultComboBoxModel();
-        model.addElement(grafo.getNombreNodo(numero-1));
+        model.addElement(grafo.getNombreNodo(numero - 1));
         lugar.setModel(model);
-        
+
         grafo.addArista(otro_lado.getSelectedIndex(), numero - 1, true, Integer.parseInt(peso_a.getText()));
         JOptionPane.showMessageDialog(jpanel_coneccion, "Se conecto con excito", "Enhorbuena", WIDTH);
         a_otrolado.setText("");
@@ -1485,7 +1560,7 @@ public class eHospital extends javax.swing.JFrame {
             agregar_coneccion.setVisible(false);
             floyd_coneccion.setVisible(false);
             emergencia_coneccion.setVisible(false);
-        }        
+        }
     }//GEN-LAST:event_jCheckBox5ActionPerformed
 
     private void jCheckBox8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox8ActionPerformed
@@ -1508,8 +1583,8 @@ public class eHospital extends javax.swing.JFrame {
         int[][] matriz = grafo.getfloyd().array;
         for (int i = 0; i < matriz.length; i++) {
             for (int j = 0; j < matriz.length; j++) {
-            System.out.println(matriz[i][j]);
-        }
+                System.out.println(matriz[i][j]);
+            }
         }
 
     }//GEN-LAST:event_jCheckBox9ActionPerformed
@@ -1529,11 +1604,11 @@ public class eHospital extends javax.swing.JFrame {
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
         // TODO add your handling code here:
-        if(complejo_hospitalario.get(centro_hos.getSelectedIndex()).getParamedicos().size()<3 || !emergencia_ranking.getSelectedItem().toString().contentEquals(complejo_hospitalario.get(centro_hos.getSelectedIndex()).getRanking())){
-            JOptionPane.showMessageDialog(jpanel_coneccion,"No se puede enviar desde este centro debido a falta de persional" ,"ERROR", WIDTH);
-        }else{
+        if (complejo_hospitalario.get(centro_hos.getSelectedIndex()).getParamedicos().size() < 3 || !emergencia_ranking.getSelectedItem().toString().contentEquals(complejo_hospitalario.get(centro_hos.getSelectedIndex()).getRanking())) {
+            JOptionPane.showMessageDialog(jpanel_coneccion, "No se puede enviar desde este centro debido a falta de persional", "ERROR", WIDTH);
+        } else {
             System.out.println("kjjasdkjkjasdh");
-           new Thread(new Hilo(complejo_hospitalario.get(centro_hos.getSelectedIndex()).getParamedicos(),complejo_hospitalario.get(centro_hos.getSelectedIndex()).getAmbulancias().get(0))).start();
+            new Thread(new Hilo(complejo_hospitalario.get(centro_hos.getSelectedIndex()).getParamedicos(), complejo_hospitalario.get(centro_hos.getSelectedIndex()).getAmbulancias().get(0))).start();
         }
     }//GEN-LAST:event_jButton11ActionPerformed
 
